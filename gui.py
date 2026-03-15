@@ -1175,7 +1175,18 @@ class SettingsDialog(QDialog):
         self.main_win = parent
         self.setWindowTitle("Настройки")
         self.setMinimumWidth(480)
-        layout = QVBoxLayout(self)
+        self.resize(520, 900)
+        self.setMaximumHeight(1200)
+        main_layout = QVBoxLayout(self)
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setStyleSheet("QScrollArea { background: transparent; border: none; }")
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scroll_widget = QWidget()
+        layout = QVBoxLayout(scroll_widget)
+        layout.setContentsMargins(0, 0, 8, 0)
 
         acc_group = QGroupBox("🔑 API ключ, адрес, приватный ключ, прокси")
         acc_layout = QVBoxLayout(acc_group)
@@ -1304,6 +1315,9 @@ class SettingsDialog(QDialog):
         faq_btn.clicked.connect(lambda: _show_faq(self))
         layout.addWidget(faq_btn)
 
+        scroll.setWidget(scroll_widget)
+        main_layout.addWidget(scroll)
+
         btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         btns.accepted.connect(self._save)
         btns.rejected.connect(self.reject)
@@ -1311,7 +1325,7 @@ class SettingsDialog(QDialog):
         ok_btn.setObjectName("primary")
         cancel_btn = btns.button(QDialogButtonBox.StandardButton.Cancel)
         cancel_btn.setObjectName("secondary")
-        layout.addWidget(btns)
+        main_layout.addWidget(btns)
         self._load()
 
     def _test_proxy(self):
